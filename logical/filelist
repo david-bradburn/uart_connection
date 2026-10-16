@@ -1,0 +1,2 @@
+logical/uart_tx.sv
+logical/uart_pkg.sv
