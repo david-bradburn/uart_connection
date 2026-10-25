@@ -1,3 +1,5 @@
 logical/uart_pkg.sv
 logical/uart_tx.sv
+logical/uart_rx.sv
 logical/baud_gen.sv
+logical/g2dff_1bit.sv

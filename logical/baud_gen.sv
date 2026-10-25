@@ -19,8 +19,8 @@ logic start_q;
 
 logic count_en;
 assign count_en = start || start_q;
-assign cnt_nxt = ((cnt == TICKRATE) || stop) ? 1'b0 : cnt + 1'b1;
-assign tick    = (cnt == TICKRATE);
+assign cnt_nxt = ((cnt == TICKRATE-1'b1) || stop) ? 1'b0 : cnt + 1'b1;
+assign tick    = (cnt == TICKRATE-1'b1);
 
 always_ff @(posedge clk or negedge resetn) begin
   if(!resetn) begin
