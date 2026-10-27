@@ -1,10 +1,10 @@
 
-`timescale 1ns/1ns
+`timescale 1ns/1ps
 
 module uart_tb import uart_pkg::*;();
 
-localparam CLKSPEED1 = 10000000;
-localparam CLKSPEED2 = 20000000;
+localparam CLKSPEED1 = 100000000;
+localparam CLKSPEED2 = 200000000;
 localparam N = 10;
 
 logic clk1 = 0;
@@ -21,12 +21,12 @@ integer     transfer_cnt = 0;
 logic [7:0] data_queue [$];
 
 always begin
-  #10;
+  #5;
   clk1 <= ~clk1;
 end
 
 always begin
-  #5;
+  #2.5;
   clk2 <= ~clk2;
 end
 
@@ -102,6 +102,7 @@ task wait_for_data();
   // foreach(data_queue[i]) $display("\tdata_queue[%0d] = %0h",i,data_queue[i]);
   tmp = data_queue.pop_front();
   transfer_cnt = transfer_cnt + 1'b1;
+  $display("cnt %4d - s %2h ?= r %2h", transfer_cnt, tmp, data_out);
   assert(tmp == data_out) else $fatal(1, "cnt %0d - %0h != %0h", transfer_cnt, tmp, data_out);
 
 
@@ -141,7 +142,7 @@ initial begin
 end
 
 integer timeout_cnt=0;
-localparam TIMEOUT = 1000000000;
+localparam TIMEOUT = 10000000;
 always_ff @( posedge clk1 ) begin
   timeout_cnt <= timeout_cnt + 1'b1;
 end

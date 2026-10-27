@@ -22,6 +22,8 @@ uart_states_e uart_state, uart_state_nxt;
 logic start_rx;
 logic stop_rx;
 logic tick;
+logic tick_mid;
+
 logic rx_s, rx_q;
 logic state_update_en;
 logic bit_cnt_en;
@@ -32,9 +34,9 @@ logic rx_en;
 
 
 assign start_rx  = (uart_state == IDLE) && !rx_s && rx_q;
-assign state_update_en = tick || start_rx;
-assign stop_rx = (uart_state == STOP) && tick;
-assign rx_en = (uart_state == DATA ) && tick;
+assign state_update_en = tick || start_rx || stop_rx;
+assign stop_rx = (uart_state == STOP) && tick_mid;
+assign rx_en = (uart_state == DATA ) && tick_mid;
 
 logic valid_i;
 always_ff @(posedge clk or negedge resetn) begin
@@ -63,7 +65,8 @@ baud_gen #(
 
   .start    (start_rx),
   .stop     (stop_rx),
-  .tick     (tick)
+  .tick     (tick),
+  .tick_mid (tick_mid)
 );
 
 assign bit_cnt_en  = (uart_state == DATA ) && tick;
@@ -86,7 +89,7 @@ always_comb begin : uart_state_update
     IDLE :   uart_state_nxt = uart_states_e'(start_rx          ? START : IDLE);
     START:   uart_state_nxt = uart_states_e'(tick              ? DATA  : START);
     DATA :   uart_state_nxt = uart_states_e'(n_bits_rx && tick ? STOP  : DATA);
-    STOP :   uart_state_nxt = uart_states_e'(tick              ? IDLE  : STOP);
+    STOP :   uart_state_nxt = uart_states_e'(tick_mid          ? IDLE  : STOP);
     default: uart_state_nxt = uart_states_e'(3'bx);
   endcase
 end : uart_state_update

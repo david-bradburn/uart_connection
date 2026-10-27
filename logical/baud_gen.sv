@@ -9,7 +9,8 @@ module baud_gen #(
 
   input wire start,
   input wire stop,
-  output wire tick
+  output wire tick,
+  output wire tick_mid
 );
 
 localparam TICKRATE = CLKSPEED/BAUD;
@@ -21,6 +22,7 @@ logic count_en;
 assign count_en = start || start_q;
 assign cnt_nxt = ((cnt == TICKRATE-1'b1) || stop) ? 1'b0 : cnt + 1'b1;
 assign tick    = (cnt == TICKRATE-1'b1);
+assign tick_mid = (cnt == (TICKRATE>>1));
 
 always_ff @(posedge clk or negedge resetn) begin
   if(!resetn) begin

@@ -22,6 +22,7 @@ uart_states_e uart_state, uart_state_nxt;
 logic start_baud;
 logic stop_baud;
 logic tick;
+
 logic [2:0] bit_cnt, bit_cnt_nxt;
 logic n_bits_sent;
 logic [7:0] data_q;
@@ -66,7 +67,8 @@ baud_gen #(
 
   .start    (start_baud),
   .stop     (stop_baud),
-  .tick     (tick)
+  .tick     (tick),
+  .tick_mid (/*unused*/)
 );
 
 always_comb begin : uart_state_update
